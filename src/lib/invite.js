@@ -1,0 +1,33 @@
+import { APP_URL, VOUCHER_CODE, offer } from '../config/offer'
+
+export function buildRegisterUrl({ email, name, company }) {
+  const params = new URLSearchParams({
+    type: offer.planType,
+    plan: offer.plan,
+    promo: VOUCHER_CODE,
+    email,
+    name,
+    company,
+  })
+  return `${APP_URL}/register?${params.toString()}`
+}
+
+// Reserves the voucher on the backend when VITE_REDEEM_API_URL is set;
+// otherwise the offer is applied by the app from the register URL params.
+export async function redeemInvite(payload) {
+  const endpoint = import.meta.env.VITE_REDEEM_API_URL
+  if (!endpoint) {
+    return { redirectUrl: buildRegisterUrl(payload) }
+  }
+
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...payload, code: VOUCHER_CODE, plan: offer.plan }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    throw new Error(data.message || 'We could not redeem this voucher. Please try again.')
+  }
+  return { redirectUrl: data.redirectUrl || buildRegisterUrl(payload) }
+}
