@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, CalendarClock, CheckCircle2, Loader2 } from 'lucide-react'
-import { formatDate, offer } from '../config/offer'
-import { isValidVoucher, isVoucherExpired, redeemInvite } from '../lib/invite'
+import { ArrowRight, CalendarClock, Loader2, MailCheck } from 'lucide-react'
+import { APP_URL, formatDate, offer } from '../config/offer'
+import { isValidActivationCode, isActivationCodeExpired, redeemInvite } from '../lib/invite'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -11,9 +11,9 @@ function validate(values) {
   if (!values.name.trim()) errors.name = 'Please enter your full name.'
   if (!EMAIL_PATTERN.test(values.email.trim())) errors.email = 'Please enter a valid work email.'
   if (!values.company.trim()) errors.company = 'Please enter your company name.'
-  if (!values.code.trim()) errors.code = 'Please enter your voucher code.'
-  else if (!isValidVoucher(values.code)) errors.code = 'This voucher code is not valid.'
-  else if (isVoucherExpired()) errors.code = `This voucher code expired on ${formatDate(offer.codeExpiresAt)}.`
+  if (!values.code.trim()) errors.code = 'Please enter your activation code.'
+  else if (!isValidActivationCode(values.code)) errors.code = 'This activation code is not valid.'
+  else if (isActivationCodeExpired()) errors.code = `This activation code expired on ${formatDate(offer.codeExpiresAt)}.`
   if (!values.agree) errors.agree = 'Please accept the terms to continue.'
   return errors
 }
@@ -33,7 +33,6 @@ export default function ClaimForm() {
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle') // idle | loading | success
   const [serverError, setServerError] = useState('')
-  const [redirectUrl, setRedirectUrl] = useState('')
 
   const set = (key) => (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
@@ -50,13 +49,12 @@ export default function ClaimForm() {
     setStatus('loading')
     setServerError('')
     try {
-      const { redirectUrl } = await redeemInvite({
+      await redeemInvite({
         name: values.name.trim(),
         email: values.email.trim(),
         company: values.company.trim(),
         code: values.code,
       })
-      setRedirectUrl(redirectUrl)
       setStatus('success')
     } catch (err) {
       setServerError(err.message)
@@ -69,15 +67,18 @@ export default function ClaimForm() {
       {status === 'success' ? (
         <div className="flex flex-col items-center py-6 text-center">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-            <CheckCircle2 className="h-8 w-8" />
+            <MailCheck className="h-8 w-8" />
           </span>
-          <h2 className="mt-6 text-2xl font-extrabold tracking-tight text-ink">You&apos;re in!</h2>
+          <h2 className="mt-6 text-2xl font-extrabold tracking-tight text-ink">Check your email</h2>
           <p className="mt-3 max-w-sm text-[14px] leading-relaxed text-ink-muted">
-            MinuteX {offer.plan} for {offer.duration} is reserved for <span className="font-semibold text-ink">{values.email}</span>. Finish creating your account to
-            activate it.
+            Your MinuteX {offer.plan} account is ready. We&apos;ve sent your login password to{' '}
+            <span className="font-semibold text-ink">{values.email}</span>.
           </p>
-          <a href={redirectUrl} className="btn btn-primary mt-7">
-            Continue to MinuteX <ArrowRight className="h-4 w-4" />
+          <p className="mt-2 max-w-sm text-[13px] leading-relaxed text-ink-soft">
+            Can&apos;t find it? Check your spam or promotions folder.
+          </p>
+          <a href={`${APP_URL}/login`} className="btn btn-primary mt-7">
+            Go to log in <ArrowRight className="h-4 w-4" />
           </a>
         </div>
       ) : (
@@ -95,12 +96,12 @@ export default function ClaimForm() {
             <Field label="Company name" error={errors.company}>
               <input className="field" value={values.company} onChange={set('company')} placeholder="Acme Inc." autoComplete="organization" />
             </Field>
-            <Field label="Voucher code" error={errors.code}>
+            <Field label="Activation code" error={errors.code}>
               <input
                 className="field font-mono uppercase tracking-wider placeholder:font-sans placeholder:normal-case placeholder:tracking-normal"
                 value={values.code}
                 onChange={set('code')}
-                placeholder="Enter your voucher code"
+                placeholder="Enter your activation code"
                 autoComplete="off"
                 spellCheck={false}
               />

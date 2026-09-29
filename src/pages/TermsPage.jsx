@@ -10,7 +10,7 @@ const sections = [
   {
     title: 'The offer',
     items: [
-      `This exclusive member offer (the "Offer") gives eligible users access to MinuteX ${offer.plan} benefits for ${offer.duration} when they sign up with a valid voucher code on this page.`,
+      `This exclusive member offer (the "Offer") gives eligible users access to MinuteX ${offer.plan} benefits for ${offer.duration} when they sign up with a valid activation code on this page.`,
       'The Offer is provided by MinuteX and is subject to these Terms & Conditions as well as the MinuteX Terms of Service and Privacy Policy.',
     ],
   },
@@ -22,10 +22,10 @@ const sections = [
     ],
   },
   {
-    title: 'Voucher code',
+    title: 'Activation code',
     items: [
-      `The voucher code can be redeemed until ${expiry}, 23:59 (GMT+7). Codes entered after this date will no longer be accepted.`,
-      'The voucher code must be entered manually in the sign-up form. It is non-transferable, cannot be exchanged for cash and cannot be combined with other promotions.',
+      `The activation code can be redeemed until ${expiry}, 23:59 (GMT+7). Codes entered after this date will no longer be accepted.`,
+      'The activation code must be entered manually in the sign-up form. It is non-transferable, cannot be exchanged for cash and cannot be combined with other promotions.',
     ],
   },
   {
@@ -92,7 +92,7 @@ export default function TermsPage() {
               </span>
               <div>
                 <p className="text-[15px] font-bold text-ink">Redeem by {expiry}</p>
-                <p className="mt-0.5 text-[13px] leading-snug text-ink-muted">The voucher code expires after this date.</p>
+                <p className="mt-0.5 text-[13px] leading-snug text-ink-muted">The activation code expires after this date.</p>
               </div>
             </div>
           </div>

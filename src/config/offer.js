@@ -4,14 +4,26 @@
 export const APP_URL = import.meta.env.VITE_APP_URL || 'https://apps.minutex.linkit360.ai'
 export const MARKETING_URL = 'https://minutex.linkit360.ai'
 
-// The voucher users must type in to claim the offer.
-export const VOUCHER_CODE = 'WTMARBELLA'
+// Activation codes users can type in to claim the offer.
+export const ACTIVATION_CODES = [
+  'WTMARBELLA',
+  'WTM8PJW',
+  'WTMV62V',
+  'WTMWBFY',
+  'WTM68BN',
+  'WTMBVDQ',
+  'WTMMVWE',
+  'WTM6TDZ',
+  'WTMHKDT',
+  'WTM34HX',
+  'WTMZWWE',
+]
 
 export const offer = {
   plan: 'Business',
   planType: 'company',
   duration: '1 year',
-  // Last day the voucher code can be redeemed
+  // Last day the activation code can be redeemed
   codeExpiresAt: '2026-12-31',
 }
 
