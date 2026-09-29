@@ -26,7 +26,7 @@ export default function RedeemPage() {
             <span className="text-brand">for {offer.duration}.</span>
           </h1>
           <p className="mx-auto mt-5 max-w-md text-[15px] font-medium leading-relaxed text-ink/75 lg:mx-0">
-            Sign up with your voucher code and enjoy every {offer.plan} benefit for a full {offer.duration} — starting instantly.
+            Sign up with your voucher code and enjoy every {offer.plan} benefit for a full {offer.duration} from activation.
           </p>
 
           <div className="mx-auto mt-8 max-w-sm text-left lg:mx-0">

@@ -8,6 +8,11 @@ export function isValidVoucher(code) {
   return normalizeCode(code) === VOUCHER_CODE
 }
 
+// The code stays redeemable through the end of codeExpiresAt, Jakarta time (GMT+7).
+export function isVoucherExpired(now = new Date()) {
+  return now > new Date(`${offer.codeExpiresAt}T23:59:59+07:00`)
+}
+
 export function buildRegisterUrl({ code, email, name, company }) {
   const params = new URLSearchParams({
     type: offer.planType,

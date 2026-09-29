@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { ArrowRight, CheckCircle2, Loader2 } from 'lucide-react'
-import { offer } from '../config/offer'
-import { isValidVoucher, redeemInvite } from '../lib/invite'
+import { Link } from 'react-router-dom'
+import { ArrowRight, CalendarClock, CheckCircle2, Loader2 } from 'lucide-react'
+import { formatDate, offer } from '../config/offer'
+import { isValidVoucher, isVoucherExpired, redeemInvite } from '../lib/invite'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -12,6 +13,7 @@ function validate(values) {
   if (!values.company.trim()) errors.company = 'Please enter your company name.'
   if (!values.code.trim()) errors.code = 'Please enter your voucher code.'
   else if (!isValidVoucher(values.code)) errors.code = 'This voucher code is not valid.'
+  else if (isVoucherExpired()) errors.code = `This voucher code expired on ${formatDate(offer.codeExpiresAt)}.`
   if (!values.agree) errors.agree = 'Please accept the terms to continue.'
   return errors
 }
@@ -95,7 +97,7 @@ export default function ClaimForm() {
             </Field>
             <Field label="Voucher code" error={errors.code}>
               <input
-                className="field font-mono uppercase tracking-wider"
+                className="field font-mono uppercase tracking-wider placeholder:font-sans placeholder:normal-case placeholder:tracking-normal"
                 value={values.code}
                 onChange={set('code')}
                 placeholder="Enter your voucher code"
@@ -106,7 +108,13 @@ export default function ClaimForm() {
 
             <label className="flex items-start gap-3 pt-1">
               <input type="checkbox" checked={values.agree} onChange={set('agree')} className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-brand" />
-              <span className="text-[13px] leading-relaxed text-ink-muted">I agree to the MinuteX Terms of Service and Privacy Policy.</span>
+              <span className="text-[13px] leading-relaxed text-ink-muted">
+                I agree to the{' '}
+                <Link to="/terms" target="_blank" className="font-semibold text-brand hover:underline">
+                  offer Terms &amp; Conditions
+                </Link>{' '}
+                and the MinuteX Privacy Policy.
+              </span>
             </label>
             {errors.agree && <p className="-mt-2 text-[12px] font-medium text-rose-600">{errors.agree}</p>}
           </div>
@@ -117,6 +125,10 @@ export default function ClaimForm() {
             {status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {status === 'loading' ? 'Claiming…' : 'Claim membership'}
           </button>
+          <p className="mt-4 flex items-center justify-center gap-1.5 text-center text-[12px] text-ink-soft">
+            <CalendarClock className="h-3.5 w-3.5 shrink-0" />
+            Valid {offer.duration} from activation · Redeem by {formatDate(offer.codeExpiresAt)}
+          </p>
         </form>
       )}
     </div>

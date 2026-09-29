@@ -11,7 +11,12 @@ export const offer = {
   plan: 'Business',
   planType: 'company',
   duration: '1 year',
+  // Last day the voucher code can be redeemed
+  codeExpiresAt: '2026-12-31',
 }
+
+export const formatDate = (iso) =>
+  new Date(`${iso}T00:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 
 export const planLimits = [
   { label: 'Recording', value: 'Unlimited' },
