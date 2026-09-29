@@ -21,10 +21,12 @@ export default function RedeemPage() {
           <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight text-ink sm:text-5xl lg:text-[4rem]">
             You&apos;re invited to
             <br />
-            MinuteX {offer.plan}.
+            MinuteX {offer.plan}
+            <br />
+            <span className="text-brand">for {offer.duration}.</span>
           </h1>
           <p className="mx-auto mt-5 max-w-md text-[15px] font-medium leading-relaxed text-ink/75 lg:mx-0">
-            Sign up through this invitation and your account starts with every {offer.plan} benefit — instantly.
+            Sign up with your voucher code and enjoy every {offer.plan} benefit for a full {offer.duration} — starting instantly.
           </p>
 
           <div className="mx-auto mt-8 max-w-sm text-left lg:mx-0">

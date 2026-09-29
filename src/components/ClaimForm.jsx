@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { ArrowRight, CheckCircle2, Loader2, Lock } from 'lucide-react'
-import { VOUCHER_CODE, offer } from '../config/offer'
-import { redeemInvite } from '../lib/invite'
+import { ArrowRight, CheckCircle2, Loader2 } from 'lucide-react'
+import { offer } from '../config/offer'
+import { isValidVoucher, redeemInvite } from '../lib/invite'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -10,6 +10,8 @@ function validate(values) {
   if (!values.name.trim()) errors.name = 'Please enter your full name.'
   if (!EMAIL_PATTERN.test(values.email.trim())) errors.email = 'Please enter a valid work email.'
   if (!values.company.trim()) errors.company = 'Please enter your company name.'
+  if (!values.code.trim()) errors.code = 'Please enter your voucher code.'
+  else if (!isValidVoucher(values.code)) errors.code = 'This voucher code is not valid.'
   if (!values.agree) errors.agree = 'Please accept the terms to continue.'
   return errors
 }
@@ -25,7 +27,7 @@ function Field({ label, error, children }) {
 }
 
 export default function ClaimForm() {
-  const [values, setValues] = useState({ name: '', email: '', company: '', agree: false })
+  const [values, setValues] = useState({ name: '', email: '', company: '', code: '', agree: false })
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle') // idle | loading | success
   const [serverError, setServerError] = useState('')
@@ -50,6 +52,7 @@ export default function ClaimForm() {
         name: values.name.trim(),
         email: values.email.trim(),
         company: values.company.trim(),
+        code: values.code,
       })
       setRedirectUrl(redirectUrl)
       setStatus('success')
@@ -68,7 +71,7 @@ export default function ClaimForm() {
           </span>
           <h2 className="mt-6 text-2xl font-extrabold tracking-tight text-ink">You&apos;re in!</h2>
           <p className="mt-3 max-w-sm text-[14px] leading-relaxed text-ink-muted">
-            MinuteX {offer.plan} is reserved for <span className="font-semibold text-ink">{values.email}</span>. Finish creating your account to
+            MinuteX {offer.plan} for {offer.duration} is reserved for <span className="font-semibold text-ink">{values.email}</span>. Finish creating your account to
             activate it.
           </p>
           <a href={redirectUrl} className="btn btn-primary mt-7">
@@ -90,15 +93,16 @@ export default function ClaimForm() {
             <Field label="Company name" error={errors.company}>
               <input className="field" value={values.company} onChange={set('company')} placeholder="Acme Inc." autoComplete="organization" />
             </Field>
-            <div>
-              <span className="mb-1.5 block text-[13px] font-semibold text-ink">Voucher code</span>
-              <div className="flex h-12 items-center justify-between rounded-xl border border-dashed border-brand/40 bg-brand-50/60 px-4">
-                <span className="font-mono text-sm font-bold tracking-wider text-brand">{VOUCHER_CODE}</span>
-                <span className="flex items-center gap-1 text-[11px] font-semibold text-ink-soft">
-                  <Lock className="h-3.5 w-3.5" /> Applied
-                </span>
-              </div>
-            </div>
+            <Field label="Voucher code" error={errors.code}>
+              <input
+                className="field font-mono uppercase tracking-wider"
+                value={values.code}
+                onChange={set('code')}
+                placeholder="Enter your voucher code"
+                autoComplete="off"
+                spellCheck={false}
+              />
+            </Field>
 
             <label className="flex items-start gap-3 pt-1">
               <input type="checkbox" checked={values.agree} onChange={set('agree')} className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-brand" />

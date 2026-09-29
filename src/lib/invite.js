@@ -1,10 +1,18 @@
 import { APP_URL, VOUCHER_CODE, offer } from '../config/offer'
 
-export function buildRegisterUrl({ email, name, company }) {
+export function normalizeCode(code = '') {
+  return code.trim().toUpperCase()
+}
+
+export function isValidVoucher(code) {
+  return normalizeCode(code) === VOUCHER_CODE
+}
+
+export function buildRegisterUrl({ code, email, name, company }) {
   const params = new URLSearchParams({
     type: offer.planType,
     plan: offer.plan,
-    promo: VOUCHER_CODE,
+    promo: normalizeCode(code),
     email,
     name,
     company,
@@ -23,7 +31,7 @@ export async function redeemInvite(payload) {
   const res = await fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...payload, code: VOUCHER_CODE, plan: offer.plan }),
+    body: JSON.stringify({ ...payload, code: normalizeCode(payload.code), plan: offer.plan }),
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
