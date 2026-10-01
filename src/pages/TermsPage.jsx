@@ -10,7 +10,7 @@ const sections = [
   {
     title: 'The offer',
     items: [
-      `This exclusive member offer (the "Offer") gives eligible users access to MinuteX ${offer.plan} benefits for ${offer.duration} when they sign up with a valid activation code on this page.`,
+      `This exclusive early-access offer (the "Offer") gives eligible users free access to MinuteX ${offer.plan} for ${offer.duration}, before it opens to the public, when they sign up with a valid activation code on this page.`,
       'The Offer is provided by MinuteX and is subject to these Terms & Conditions as well as the MinuteX Terms of Service and Privacy Policy.',
     ],
   },
@@ -73,7 +73,7 @@ export default function TermsPage() {
 
           <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight text-ink sm:text-5xl">Terms &amp; Conditions</h1>
           <p className="mt-4 max-w-xl text-[15px] font-medium leading-relaxed text-ink/75">
-            MinuteX {offer.plan} exclusive member offer. Please read these terms before claiming your membership.
+            MinuteX {offer.plan} exclusive early-access offer. Please read these terms before claiming your membership.
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -82,7 +82,7 @@ export default function TermsPage() {
                 <Hourglass className="h-5 w-5" />
               </span>
               <div>
-                <p className="text-[15px] font-bold text-ink">{offer.duration[0].toUpperCase() + offer.duration.slice(1)} of {offer.plan}</p>
+                <p className="text-[15px] font-bold text-ink">Free for {offer.duration}</p>
                 <p className="mt-0.5 text-[13px] leading-snug text-ink-muted">Counted from the day your account is activated.</p>
               </div>
             </div>

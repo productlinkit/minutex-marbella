@@ -16,18 +16,23 @@ export default function RedeemPage() {
         <div className="animate-fade-up text-center lg:text-left">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/60 px-3 py-1.5 text-xs font-semibold text-ink backdrop-blur">
             <Sparkles className="h-3.5 w-3.5 text-brand" />
-            Exclusive member invitation
+            Exclusive early-access invitation
           </span>
           <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight text-ink sm:text-5xl lg:text-[4rem]">
             You&apos;re invited to
             <br />
-            MinuteX {offer.plan}
+            MinuteX {offer.plan}.
             <br />
-            <span className="text-brand">for {offer.duration}.</span>
+            <span className="text-brand">Free for {offer.duration}.</span>
           </h1>
           <p className="mx-auto mt-5 max-w-md text-[15px] font-medium leading-relaxed text-ink/75 lg:mx-0">
-            Sign up with your activation code and enjoy every {offer.plan} benefit for a full {offer.duration} from activation.
+            You&apos;re on the exclusive early-access list — getting MinuteX {offer.plan} before it opens to the public. Claim your code to
+            unlock every {offer.plan} feature free for a full year.
           </p>
+          <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white/60 px-3 py-1.5 text-[12px] font-medium text-ink/80 backdrop-blur">
+            <Sparkles className="h-3 w-3 shrink-0 text-brand" />
+            Members-only early build · Be among the first to use MinuteX {offer.plan}
+          </span>
 
           <div className="mx-auto mt-8 max-w-sm text-left lg:mx-0">
             <div className="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-100 bg-white/80 backdrop-blur">

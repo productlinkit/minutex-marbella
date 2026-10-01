@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { ArrowRight, CalendarClock, Loader2, MailCheck } from 'lucide-react'
-import { APP_URL, formatDate, offer } from '../config/offer'
+import { Link, useNavigate } from 'react-router-dom'
+import { CalendarClock, Loader2 } from 'lucide-react'
+import { formatDate, offer } from '../config/offer'
 import { isValidActivationCode, isActivationCodeExpired, redeemInvite } from '../lib/invite'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -31,8 +31,9 @@ function Field({ label, error, children }) {
 export default function ClaimForm() {
   const [values, setValues] = useState({ name: '', email: '', company: '', code: '', agree: false })
   const [errors, setErrors] = useState({})
-  const [status, setStatus] = useState('idle') // idle | loading | success
+  const [status, setStatus] = useState('idle') // idle | loading
   const [serverError, setServerError] = useState('')
+  const navigate = useNavigate()
 
   const set = (key) => (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
@@ -49,13 +50,14 @@ export default function ClaimForm() {
     setStatus('loading')
     setServerError('')
     try {
+      const email = values.email.trim()
       await redeemInvite({
         name: values.name.trim(),
-        email: values.email.trim(),
+        email,
         company: values.company.trim(),
         code: values.code,
       })
-      setStatus('success')
+      navigate('/welcome', { state: { email } })
     } catch (err) {
       setServerError(err.message)
       setStatus('idle')
@@ -64,74 +66,57 @@ export default function ClaimForm() {
 
   return (
     <div id="claim" className="w-full max-w-md rounded-3xl border border-white/70 bg-white/90 p-7 shadow-card backdrop-blur-md sm:p-8">
-      {status === 'success' ? (
-        <div className="flex flex-col items-center py-6 text-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-            <MailCheck className="h-8 w-8" />
-          </span>
-          <h2 className="mt-6 text-2xl font-extrabold tracking-tight text-ink">Check your email</h2>
-          <p className="mt-3 max-w-sm text-[14px] leading-relaxed text-ink-muted">
-            Your MinuteX {offer.plan} account is ready. We&apos;ve sent your login password to{' '}
-            <span className="font-semibold text-ink">{values.email}</span>.
-          </p>
-          <p className="mt-2 max-w-sm text-[13px] leading-relaxed text-ink-soft">
-            Can&apos;t find it? Check your spam or promotions folder.
-          </p>
-          <a href={`${APP_URL}/login`} className="btn btn-primary mt-7">
-            Go to log in <ArrowRight className="h-4 w-4" />
-          </a>
+      <form onSubmit={onSubmit} noValidate>
+        <h2 className="text-2xl font-extrabold tracking-tight text-ink">Claim your membership</h2>
+        <p className="mt-1.5 text-[13px] text-ink-muted">
+          Create your account to unlock MinuteX {offer.plan}, then install the early-access app.
+        </p>
+
+        <div className="mt-6 space-y-4">
+          <Field label="Full name" error={errors.name}>
+            <input className="field" value={values.name} onChange={set('name')} placeholder="Jane Cooper" autoComplete="name" />
+          </Field>
+          <Field label="Work email" error={errors.email}>
+            <input className="field" type="email" value={values.email} onChange={set('email')} placeholder="jane@company.com" autoComplete="email" />
+          </Field>
+          <Field label="Company name" error={errors.company}>
+            <input className="field" value={values.company} onChange={set('company')} placeholder="Acme Inc." autoComplete="organization" />
+          </Field>
+          <Field label="Activation code" error={errors.code}>
+            <input
+              className="field font-mono uppercase tracking-wider placeholder:font-sans placeholder:normal-case placeholder:tracking-normal"
+              value={values.code}
+              onChange={set('code')}
+              placeholder="Enter your activation code"
+              autoComplete="off"
+              spellCheck={false}
+            />
+          </Field>
+
+          <label className="flex items-start gap-3 pt-1">
+            <input type="checkbox" checked={values.agree} onChange={set('agree')} className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-brand" />
+            <span className="text-[13px] leading-relaxed text-ink-muted">
+              I agree to the{' '}
+              <Link to="/terms" target="_blank" className="font-semibold text-brand hover:underline">
+                offer Terms &amp; Conditions
+              </Link>{' '}
+              and the MinuteX Privacy Policy.
+            </span>
+          </label>
+          {errors.agree && <p className="-mt-2 text-[12px] font-medium text-rose-600">{errors.agree}</p>}
         </div>
-      ) : (
-        <form onSubmit={onSubmit} noValidate>
-          <h2 className="text-2xl font-extrabold tracking-tight text-ink">Claim your membership</h2>
-          <p className="mt-1.5 text-[13px] text-ink-muted">Create your account to unlock MinuteX {offer.plan}.</p>
 
-          <div className="mt-6 space-y-4">
-            <Field label="Full name" error={errors.name}>
-              <input className="field" value={values.name} onChange={set('name')} placeholder="Jane Cooper" autoComplete="name" />
-            </Field>
-            <Field label="Work email" error={errors.email}>
-              <input className="field" type="email" value={values.email} onChange={set('email')} placeholder="jane@company.com" autoComplete="email" />
-            </Field>
-            <Field label="Company name" error={errors.company}>
-              <input className="field" value={values.company} onChange={set('company')} placeholder="Acme Inc." autoComplete="organization" />
-            </Field>
-            <Field label="Activation code" error={errors.code}>
-              <input
-                className="field font-mono uppercase tracking-wider placeholder:font-sans placeholder:normal-case placeholder:tracking-normal"
-                value={values.code}
-                onChange={set('code')}
-                placeholder="Enter your activation code"
-                autoComplete="off"
-                spellCheck={false}
-              />
-            </Field>
+        {serverError && <p className="mt-5 rounded-xl bg-rose-50 px-4 py-3 text-[13px] font-medium text-rose-600">{serverError}</p>}
 
-            <label className="flex items-start gap-3 pt-1">
-              <input type="checkbox" checked={values.agree} onChange={set('agree')} className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-brand" />
-              <span className="text-[13px] leading-relaxed text-ink-muted">
-                I agree to the{' '}
-                <Link to="/terms" target="_blank" className="font-semibold text-brand hover:underline">
-                  offer Terms &amp; Conditions
-                </Link>{' '}
-                and the MinuteX Privacy Policy.
-              </span>
-            </label>
-            {errors.agree && <p className="-mt-2 text-[12px] font-medium text-rose-600">{errors.agree}</p>}
-          </div>
-
-          {serverError && <p className="mt-5 rounded-xl bg-rose-50 px-4 py-3 text-[13px] font-medium text-rose-600">{serverError}</p>}
-
-          <button type="submit" disabled={status === 'loading'} className="btn btn-primary mt-6 w-full">
-            {status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            {status === 'loading' ? 'Claiming…' : 'Claim membership'}
-          </button>
-          <p className="mt-4 flex items-center justify-center gap-1.5 text-center text-[12px] text-ink-soft">
-            <CalendarClock className="h-3.5 w-3.5 shrink-0" />
-            Valid {offer.duration} from activation · Redeem by {formatDate(offer.codeExpiresAt)}
-          </p>
-        </form>
-      )}
+        <button type="submit" disabled={status === 'loading'} className="btn btn-primary mt-6 w-full">
+          {status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+          {status === 'loading' ? 'Claiming…' : 'Claim & get access'}
+        </button>
+        <p className="mt-4 flex items-start justify-center gap-1.5 text-[12px] leading-relaxed text-ink-soft">
+          <CalendarClock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          Free for {offer.duration} from activation · Redeem by {formatDate(offer.codeExpiresAt)} · Priority iOS &amp; Android access
+        </p>
+      </form>
     </div>
   )
 }

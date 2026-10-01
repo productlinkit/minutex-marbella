@@ -4,6 +4,15 @@
 export const APP_URL = import.meta.env.VITE_APP_URL || 'https://apps.minutex.linkit360.ai'
 export const MARKETING_URL = 'https://minutex.linkit360.ai'
 
+// Early-access app downloads shown after a successful redeem
+export const DOWNLOADS = {
+  ios: import.meta.env.VITE_IOS_TESTFLIGHT_URL || 'https://testflight.apple.com/join/v5wVDW82',
+  android:
+    import.meta.env.VITE_ANDROID_APK_URL ||
+    'https://github.com/productlinkit/minutex-marbella/releases/download/v0.1.0-rc.2/app-release.apk',
+}
+export const SUPPORT_URL = import.meta.env.VITE_SUPPORT_URL || 'mailto:support@linkit360.ai'
+
 // Activation codes users can type in to claim the offer.
 export const ACTIVATION_CODES = [
   'WTMARBELLA',
@@ -42,5 +51,5 @@ export const benefits = [
   '1TB cloud storage',
   '24/7 dedicated support',
   'Custom integrations',
-  'Advanced analytics',
+  'First access before public launch',
 ]
