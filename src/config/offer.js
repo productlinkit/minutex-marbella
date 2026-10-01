@@ -3,13 +3,14 @@
 
 export const APP_URL = import.meta.env.VITE_APP_URL || 'https://apps.minutex.linkit360.ai'
 export const MARKETING_URL = 'https://minutex.linkit360.ai'
+export const WEBSITE_URL = 'https://minutex.ai'
 
 // Early-access app downloads shown after a successful redeem
 export const DOWNLOADS = {
   ios: import.meta.env.VITE_IOS_TESTFLIGHT_URL || 'https://testflight.apple.com/join/v5wVDW82',
   android:
     import.meta.env.VITE_ANDROID_APK_URL ||
-    'https://github.com/productlinkit/minutex-marbella/releases/download/v0.1.0-rc.2/app-release.apk',
+    'https://drive.google.com/drive/folders/1T_Wkh5r8dA25eENQTPpnEa_A1RxYHOQv?usp=sharing',
 }
 export const SUPPORT_URL = import.meta.env.VITE_SUPPORT_URL || 'mailto:support@linkit360.ai'
 

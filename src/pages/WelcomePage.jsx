@@ -1,10 +1,10 @@
 import { Navigate, useLocation } from 'react-router-dom'
-import { ArrowDown, ArrowUpRight, Check, Mail } from 'lucide-react'
+import { ArrowUpRight, Check, Globe, Mail } from 'lucide-react'
 import { siAndroid, siApple } from 'simple-icons'
 import BrandIcon from '../components/BrandIcon'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { DOWNLOADS, SUPPORT_URL, offer } from '../config/offer'
+import { DOWNLOADS, SUPPORT_URL, WEBSITE_URL, offer } from '../config/offer'
 
 export default function WelcomePage() {
   const { state } = useLocation()
@@ -63,14 +63,29 @@ export default function WelcomePage() {
           </a>
           <a
             href={DOWNLOADS.android}
+            target="_blank"
+            rel="noreferrer"
             className="flex items-center gap-3.5 rounded-2xl bg-brand px-5 py-4 text-left text-white shadow-brand transition-all hover:-translate-y-0.5 hover:bg-brand-600"
           >
             <BrandIcon icon={siAndroid} className="h-7 w-7 shrink-0" />
             <span className="flex-1 leading-tight">
               <span className="block text-[16px] font-bold">Download for Android</span>
-              <span className="mt-0.5 block text-[12px] text-white/80">APK · direct download</span>
+              <span className="mt-0.5 block text-[12px] text-white/80">APK · via Google Drive</span>
             </span>
-            <ArrowDown className="h-4 w-4 shrink-0 text-white/80" />
+            <ArrowUpRight className="h-4 w-4 shrink-0 text-white/80" />
+          </a>
+          <a
+            href={WEBSITE_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3.5 rounded-2xl border border-white/70 bg-white/85 px-5 py-4 text-left text-ink shadow-soft backdrop-blur transition-transform hover:-translate-y-0.5 sm:col-span-2"
+          >
+            <Globe className="h-7 w-7 shrink-0 text-brand" />
+            <span className="flex-1 leading-tight">
+              <span className="block text-[16px] font-bold">Visit minutex.ai</span>
+              <span className="mt-0.5 block text-[12px] text-ink-muted">Explore features and the MinuteX web app</span>
+            </span>
+            <ArrowUpRight className="h-4 w-4 shrink-0 text-ink-soft" />
           </a>
         </div>
         <p className="mt-3 text-[12px] text-ink-soft">Android: you may need to allow installs from unknown sources to open the APK.</p>
